@@ -71,6 +71,7 @@ class JsonRpcWebsocketHandler(websocket.WebSocketHandler):
 
     @gen.coroutine
     def write_event(self, event, data):
+        print("write_event which i dont like")
         if isinstance(data, basestring):
             data = json.loads(data)
         message = json_encode({'event': event, 'data': data})

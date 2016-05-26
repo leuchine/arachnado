@@ -30,7 +30,8 @@ def subscribe(url, headers, name, command):
             logger.info('Websocket dropped unexpectedly')
             break
         response = json.loads(json_response)
-        logger.info(json_response)
+        response["data"]["body"] = ""
+        logger.info(response)
 
     yield from job_socket.close()
     logger.info('Websocket closed')
@@ -56,6 +57,7 @@ def passive_subscribe(url, headers):
 
 if __name__ == '__main__':
     # url = 'wss://54.200.77.2/ws-rpc'
+    url = 'ws://127.0.0.1:8888/ws-jobs'
     url = 'ws://127.0.0.1:8888/ws-rpc'
     # url = 'ws://127.0.0.1:8888/ws-updates'
     headers = {'Authorization': 'Basic YWRtaW46bWVtZXhwYXNz'}
@@ -73,7 +75,19 @@ if __name__ == '__main__':
             },
         },
     }
-    asyncio.Task(subscribe(url, headers, 'jobs', jobs_command))
+    sites_command = {
+        'event': 'rpc:request',
+        'data': {
+            'id':0,
+            'jsonrpc': '2.0',
+            'method': 'pages.subscribe',
+            # 'method': 'jobs.subscribe',
+            'params': {
+            },
+        },
+    }
+    asyncio.Task(subscribe(url, headers, 'sites', sites_command))
+    # asyncio.Task(subscribe(url, headers, 'jobs', jobs_command))
     # asyncio.Task(passive_subscribe(url, headers))
     print("!!!!!!!!!!!!")
     asyncio.get_event_loop().run_forever()
