@@ -59,6 +59,8 @@ class Monitor(BaseWSHandler):
         self.opts = opts
 
     def on_open(self):
+        print("::::::::::::::::::::::::")
+        print("on_open:")
         logger.debug("new connection")
         self.cp.signals.connect(self.on_stats_changed, agg_stats_changed)
         self.cp.signals.connect(self.on_spider_opened, CPS.spider_opened)
@@ -71,6 +73,8 @@ class Monitor(BaseWSHandler):
         self.write_event("jobs:state", self.cp.jobs)
 
     def on_close(self):
+        print("::::::::::::::::::::::::")
+        print("on_close:")
         logger.debug("connection closed")
         self.cp.signals.disconnect(self.on_stats_changed, agg_stats_changed)
         self.cp.signals.disconnect(self.on_spider_opened, CPS.spider_opened)

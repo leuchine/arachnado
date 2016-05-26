@@ -268,6 +268,10 @@ class ArachnadoCrawlerProcess(CrawlerProcess):
         return [self._get_job_info(crawler, self._get_crawler_status(crawler))
                 for crawler in crawlers]
 
+    @classmethod
+    def get_spider_urls(cls, spider):
+        return " ".join(spider.start_urls)
+
     def _get_job_info(self, crawler, status):
         start_options = getattr(crawler, 'start_options', {})
         return {
@@ -279,6 +283,7 @@ class ArachnadoCrawlerProcess(CrawlerProcess):
             'downloads': self._downloader_stats(crawler),
             'args': start_options.get('args', {}),
             'settings': start_options.get('settings', {}),
+            'urls': self.get_spider_urls(crawler.spider)
             # 'start_options': start_options,
             # 'engine_info': dict(get_engine_status(crawler.engine))
         }

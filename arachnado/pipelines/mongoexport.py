@@ -70,6 +70,14 @@ class MongoExportPipeline(object):
     def from_crawler(cls, crawler):
         return cls(crawler)
 
+    @classmethod
+    def get_spider_urls(cls, spider):
+        options = getattr(spider.crawler, 'start_options', None)
+        if options and "domain" in options:
+            return options["domain"]
+        else:
+            return " ".join(spider.start_urls)
+
     @tt_coroutine
     def open_spider(self, spider):
         try:
@@ -80,6 +88,7 @@ class MongoExportPipeline(object):
                 'started_at': datetime.datetime.utcnow(),
                 'status': 'running',
                 'spider': spider.name,
+                "urls": self.get_spider_urls(spider),
                 'options': getattr(spider.crawler, 'start_options', {}),
             })
             spider.motor_job_id = str(self.job_id)

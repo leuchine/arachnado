@@ -17,6 +17,8 @@ jsonrpclib.config.use_jsonclass = False
 class JsonRpcWebsocketHandler(websocket.WebSocketHandler):
 
     def on_message(self, message):
+        print("::::::::::::::::::::::::")
+        print("on_message:")
         self._results = []
         try:
             msg = json.loads(message.encode('utf-8'))
@@ -41,6 +43,8 @@ class JsonRpcWebsocketHandler(websocket.WebSocketHandler):
         return self.write_event('rpc:response', data)
 
     def open(self):
+        print("::::::::::::::::::::::::")
+        print("open:")
         """Forward open event to resource objects"""
         for resource_name, resource in self.__dict__.iteritems():
             if hasattr(RequestHandler, resource_name):

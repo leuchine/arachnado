@@ -7,6 +7,7 @@ jsonrpc.jdumps = json_encode
 import tornadorpc
 from tornadorpc.json import JSONRPCHandler
 from tornado.concurrent import Future
+from tornado import gen
 
 from arachnado.rpc.jobs import JobsRpc
 from arachnado.rpc.sites import SitesRpc
@@ -23,6 +24,7 @@ class MainRpcHttpHandler(JSONRPCHandler):
     """ Main JsonRpc router for REST requests"""
 
     def initialize(self, *args, **kwargs):
+        print("MainRpcHttpHandler:")
         self.jobs = JobsRpc(self, *args, **kwargs)
         self.sites = SitesRpc(self, *args, **kwargs)
         self.pages = PagesRpc(self, *args, **kwargs)
@@ -38,6 +40,16 @@ class MainRpcHttpHandler(JSONRPCHandler):
             result = result.result()
         self._results.append(result)
         self._RPC_.response(self)
+
+    def subscribe_to_jobs(self, include=[], exclude=[]):
+        print("subscribe_to_jobs!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(include)
+        print(exclude)
+        self.jobs.subscribe()
+
+    @gen.coroutine
+    def write_event(self, event, data):
+        print("write_event!!!!!!!!!!!!!")
 
 
 class MainRpcWebsocketHandler(JsonRpcWebsocketHandler, MainRpcHttpHandler):
